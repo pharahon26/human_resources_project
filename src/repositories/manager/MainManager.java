@@ -55,7 +55,7 @@ public class MainManager {
     }
 
     // delete POSTE
-    public void deleteposte(int posteId) {
+    public void deletePoste(int posteId) {
         database.deleteposte(posteId);
     }
 

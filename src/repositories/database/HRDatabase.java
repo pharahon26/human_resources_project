@@ -14,17 +14,19 @@ public class HRDatabase {
 
     public static final String DB_NAME = "human_ressources";
     /// ne pas oublier de changer le path vers celui du projet
-    public static final String DB_URL = "jdbc:sqlite:E:/human_resources_project/src/db/human_ressources";
+    public static final String DB_URL = "jdbc:sqlite:E:/human_resources_project/src/db/human_ressources.db";
 
     public HRDatabase() {
         try {
+            Class.forName("org.sqlite.JDBC");
             dbConnection = DriverManager.getConnection(DB_URL);
             if (dbConnection != null) {
                 DatabaseMetaData meta = dbConnection.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new database has been created.");
+                createNewTables();
             }
-        } catch (SQLException  e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("error mesage " + e.getMessage());
             System.out.println("A new database has not been created.");
         }
@@ -46,7 +48,7 @@ public class HRDatabase {
 
     // close connection
     public void closeConnection() {
-        /** don't forget to close de database**/
+        // don't forget to close de database
         try {
             if (dbConnection != null) {
                 dbConnection.close();
@@ -62,23 +64,40 @@ public class HRDatabase {
         String userTable = UserDAO.getSQLSchema();
         String posteTable = PosteDAO.getSQLSchema();
         String employeeTable = EmployeeDAO.getSQLSchema();
-        try{
-            Statement stmt = dbConnection.createStatement();
+        System.out.println("start create tables");
+        try(Statement stmt = dbConnection.createStatement()){
+            System.out.println("start create table user " + stmt.getMaxFieldSize());
             boolean isUserTableCreated = stmt.execute(userTable);
+            System.out.println("create user table result " + isUserTableCreated + " " + stmt.isCloseOnCompletion());
             if(isUserTableCreated){
                 System.out.println("userTable created successfully");
             }
+        } catch (SQLException e) {
+            System.out.println("error from db create user table.");
+            System.out.println(e.getMessage());
+        }
+
+        try(Statement stmt = dbConnection.createStatement()){
             boolean isPosteTableCreated = stmt.execute(posteTable);
             if(isPosteTableCreated){
                 System.out.println("posteTable created successfully");
             }
+        } catch (SQLException e) {
+            System.out.println("error from db create poste table.");
+            System.out.println(e.getMessage());
+        }
+
+        try(Statement stmt = dbConnection.createStatement()){
             boolean isEmployTableCreated = stmt.execute(employeeTable);
             if(isEmployTableCreated){
                 System.out.println("employeeTable created successfully");
             }
         } catch (SQLException e) {
+            System.out.println("error from db create employee table.");
             System.out.println(e.getMessage());
         }
+
+
     }
 
     /** USER OPERATIONS **/
@@ -86,14 +105,16 @@ public class HRDatabase {
     // insert User
     public void insertUser(User user) {
         // Get the sql statement for the database
+        System.out.println("Start insert user.");
         String insert = UserDAO.insertUser(user);
-        try{
-            Statement stmt = dbConnection.createStatement();
+        System.out.println("Start insert : " + insert);
+        try(Statement stmt = dbConnection.createStatement()){
             boolean isUserInserted = stmt.execute(insert);
             if(isUserInserted){
                 System.out.println("user inserted successfully");
             }
         } catch (SQLException e) {
+            System.out.println("error from db insert user.");
             System.out.println(e.getMessage());
         }
     }
@@ -101,7 +122,9 @@ public class HRDatabase {
     // update user
     public void updateUser(User user) {
         // Get the sql statement for the database
+        System.out.println("Start update user.");
         String update = UserDAO.updateUser(user);
+        System.out.println("Start update : " + update);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isUserUpdated = stmt.execute(update);
@@ -110,6 +133,7 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db update user.");
             System.out.println(e.getMessage());
         }
     }
@@ -117,7 +141,9 @@ public class HRDatabase {
     // delete User
     public void deleteUser(int userId) {
         // Get the sql statement for the database
+        System.out.println("Start delete user.");
         String delete = UserDAO.deleteUser(userId);
+        System.out.println("Start delete : " + delete);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isUserDeleted = stmt.execute(delete);
@@ -126,6 +152,7 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db delete user.");
             System.out.println(e.getMessage());
         }
     }
@@ -133,7 +160,9 @@ public class HRDatabase {
     // get User
     public User getUser(int userId) {
         // Get the sql statement for the database
+        System.out.println("Start get user.");
         String get = UserDAO.getUser(userId);
+        System.out.println("Start get : " + get);
         User userGet = new User();
         try{
             Statement stmt = dbConnection.createStatement();
@@ -146,7 +175,9 @@ public class HRDatabase {
                 );
 
             }
+            System.out.println("return user: " +  userGet.toString());
         } catch (SQLException e) {
+            System.out.println("error from db get user.");
             System.out.println(e.getMessage());
         }
         return userGet;
@@ -158,7 +189,9 @@ public class HRDatabase {
     // insert POSTE
     public void insertPoste(Poste poste) {
         // Get the sql statement for the database
+        System.out.println("Start insert poste.");
         String insert = PosteDAO.insertPoste(poste);
+        System.out.println("Start insert : " + insert);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isPosteInserted = stmt.execute(insert);
@@ -166,6 +199,7 @@ public class HRDatabase {
                 System.out.println("poste inserted successfully");
             }
         } catch (SQLException e) {
+            System.out.println("error from db insert poste.");
             System.out.println(e.getMessage());
         }
     }
@@ -173,7 +207,9 @@ public class HRDatabase {
     // update POSTE
     public void updatePoste(Poste poste) {
         // Get the sql statement for the database
+        System.out.println("Start update poste.");
         String update = PosteDAO.updatePoste(poste);
+        System.out.println("Start update : " + update);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isPosteUpdated = stmt.execute(update);
@@ -182,6 +218,7 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db update poste.");
             System.out.println(e.getMessage());
         }
     }
@@ -189,7 +226,9 @@ public class HRDatabase {
     // delete POSTE
     public void deleteposte(int posteId) {
         // Get the sql statement for the database
+        System.out.println("Start delete poste.");
         String delete = PosteDAO.deletePoste(posteId);
+        System.out.println("Start delete : " + delete);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isPosteDeleted = stmt.execute(delete);
@@ -198,6 +237,7 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db delete poste.");
             System.out.println(e.getMessage());
         }
     }
@@ -205,24 +245,27 @@ public class HRDatabase {
     // get Poste
     public Poste getPoste(int posteId) {
         // Get the sql statement for the database
+        System.out.println("Start get poste.");
         String get = PosteDAO.getposte(posteId);
         Poste posteGet = new Poste();
+        System.out.println("Start get : " + get);
         try{
             Statement stmt = dbConnection.createStatement();
             ResultSet result = stmt.executeQuery(get);
             while (result.next()) {
                 posteGet = new Poste(
                         result.getInt("id"),
-                        result.getInt("upPosteId"),
-                        result.getInt("downPosteId"),
+                        result.getInt("up_poste_id"),
+                        result.getInt("down_poste_id"),
                         result.getDouble("salary"),
                         result.getString("title"),
-                        result.getInt("workTimeHoursByDay")
+                        result.getInt("work_time_hours_by_day")
                 );
-
+                System.out.println("return poste.");
             }
-
+            System.out.println("return poste: " +  posteGet.toString());
         } catch (SQLException e) {
+            System.out.println("error from db get poste.");
             System.out.println(e.getMessage());
         }
         return posteGet;
@@ -231,7 +274,9 @@ public class HRDatabase {
     // get Poste
     public List<Poste> getAllPoste() {
         // Get the sql statement for the database
+        System.out.println("Start get all poste.");
         String get = PosteDAO.getAllPostes();
+        System.out.println("Start get all : " + get);
         List<Poste> posteGet = new ArrayList<>();
         try{
             Statement stmt = dbConnection.createStatement();
@@ -239,16 +284,21 @@ public class HRDatabase {
             while (result.next()) {
                 Poste posteG = new Poste(
                         result.getInt("id"),
-                        result.getInt("upPosteId"),
-                        result.getInt("downPosteId"),
+                        result.getInt("up_poste_id"),
+                        result.getInt("down_poste_id"),
                         result.getDouble("salary"),
                         result.getString("title"),
-                        result.getInt("workTimeHoursByDay")
+                        result.getInt("work_time_hours_by_day")
                 );
                 posteGet.add(posteG);
             }
+            System.out.println("return all postes.");
+            for(Poste po : posteGet){
+                System.out.println("return poste in list: " +  po.toString());
+            }
 
         } catch (SQLException e) {
+            System.out.println("error from db get all poste.");
             System.out.println(e.getMessage());
         }
         return posteGet;
@@ -261,7 +311,9 @@ public class HRDatabase {
     // insert Employee
     public void insertEmployee(Employee employee) {
         // Get the sql statement for the database
+        System.out.println("Start insert employee.");
         String insert = EmployeeDAO.insertEmployee(employee);
+        System.out.println("Start insert : " + insert);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isEmployeeInserted = stmt.execute(insert);
@@ -269,14 +321,17 @@ public class HRDatabase {
                 System.out.println("employee inserted successfully");
             }
         } catch (SQLException e) {
+            System.out.println("error from db insert employee.");
             System.out.println(e.getMessage());
         }
     }
 
     // update Employee
     public void updateEmployee(Employee employee) {
+        System.out.println("Start update employee.");
         // Get the sql statement for the database
         String update = EmployeeDAO.updateEmployee(employee);
+        System.out.println("Start update : " + update);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isEmployeeUpdated = stmt.execute(update);
@@ -285,14 +340,17 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db update employee.");
             System.out.println(e.getMessage());
         }
     }
 
     // delete Employee
     public void deleteEmployee(int employeeId) {
+        System.out.println("Start delete employee.");
         // Get the sql statement for the database
         String delete = EmployeeDAO.deleteEmployee(employeeId);
+        System.out.println("Start delete : " + delete);
         try{
             Statement stmt = dbConnection.createStatement();
             boolean isEmployeeDeleted = stmt.execute(delete);
@@ -301,6 +359,7 @@ public class HRDatabase {
             }
 
         } catch (SQLException e) {
+            System.out.println("error from db delete employee.");
             System.out.println(e.getMessage());
         }
     }
@@ -308,7 +367,9 @@ public class HRDatabase {
     // get Employee
     public Employee getEmployee(int employeeId) {
         // Get the sql statement for the database
+        System.out.println("Start get employee.");
         String get = EmployeeDAO.getEmployee(employeeId);
+        System.out.println("Start get : " + get);
         Employee employeeGet = new Employee();
         try{
             Statement stmt = dbConnection.createStatement();
@@ -318,15 +379,17 @@ public class HRDatabase {
                         result.getInt("id"),
                         result.getString("lastName"),
                         result.getString("firstName"),
-                        result.getInt("phoneNumber"),
+                        result.getString("phoneNumber"),
                         result.getLong("birthDay"),
-                        result.getInt("posteId"),
+                        result.getInt("poste_id"),
                         result.getString("title"),
                         result.getInt("vacancy_days_remaining")
                 );
 
             }
+            System.out.println("return employee: " +  employeeGet.toString());
         } catch (SQLException e) {
+            System.out.println("error from db get employee.");
             System.out.println(e.getMessage());
         }
         return employeeGet;
@@ -335,7 +398,9 @@ public class HRDatabase {
     // get all Employees
     public List<Employee> getAllEmployees() {
         // Get the sql statement for the database
+        System.out.println("Start get all employees.");
         String get = EmployeeDAO.getAllEmployees();
+        System.out.println("Start get all : " + get);
         List<Employee> employeeGet = new ArrayList<>();
         try{
             Statement stmt = dbConnection.createStatement();
@@ -345,16 +410,20 @@ public class HRDatabase {
                         result.getInt("id"),
                         result.getString("lastName"),
                         result.getString("firstName"),
-                        result.getInt("phoneNumber"),
+                        result.getString("phoneNumber"),
                         result.getLong("birthDay"),
-                        result.getInt("posteId"),
+                        result.getInt("poste_id"),
                         result.getString("title"),
                         result.getInt("vacancy_days_remaining")
                 );
                 employeeGet.add(employeeG);
-
+                System.out.println("return all employees.");
+            }
+            for(Employee emp : employeeGet){
+                System.out.println("return employee in list: " +  emp.toString());
             }
         } catch (SQLException e) {
+            System.out.println("error from db get all employee.");
             System.out.println(e.getMessage());
         }
         return employeeGet;

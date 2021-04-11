@@ -69,4 +69,16 @@ public class Poste {
     public void setWorkTimeHoursByDay(int workTimeHoursByDay) {
         this.workTimeHoursByDay = workTimeHoursByDay;
     }
+
+    @Override
+    public String toString() {
+        return "Poste{" +
+                "id=" + id +
+                ", upPosteId=" + upPosteId +
+                ", downPosteId=" + downPosteId +
+                ", salary=" + salary +
+                ", title='" + title + '\'' +
+                ", workTimeHoursByDay=" + workTimeHoursByDay +
+                '}';
+    }
 }

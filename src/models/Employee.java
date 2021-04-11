@@ -6,7 +6,7 @@ public class Employee {
     private int id;
     private String lastName;
     private String firstName;
-    private int phoneNumber;
+    private String phoneNumber;
     private long birthDay;
     private int posteId;
     private String title;
@@ -15,14 +15,14 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String lastName, String firstName, int phoneNumber, Date employeeBirthBay) {
+    public Employee(String lastName, String firstName, String phoneNumber, Date employeeBirthBay) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.phoneNumber = phoneNumber;
         this.birthDay = employeeBirthBay.getTime();
     }
 
-    public Employee(int id, String lastName, String firstName, int phoneNumber, long birthDay, int posteId, String title, int vacancy_days_remaining) {
+    public Employee(int id, String lastName, String firstName, String phoneNumber, long birthDay, int posteId, String title, int vacancy_days_remaining) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -57,11 +57,11 @@ public class Employee {
         this.firstName = firstName;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -99,5 +99,19 @@ public class Employee {
 
     public void setVacancy_days_remaining(int vacancy_days_remaining) {
         this.vacancy_days_remaining = vacancy_days_remaining;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", birthDay=" + birthDay +
+                ", posteId=" + posteId +
+                ", title='" + title + '\'' +
+                ", vacancy_days_remaining=" + vacancy_days_remaining +
+                '}';
     }
 }
