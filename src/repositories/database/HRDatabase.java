@@ -3,6 +3,7 @@ package repositories.database;
 import models.Employee;
 import models.Poste;
 import models.User;
+import models.Vaccancy;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -32,20 +33,6 @@ public class HRDatabase {
         }
     }
 
-//    public void connect() {
-//        try {
-//            // Connect the database
-//            this.dbConnection = DriverManager.getConnection(DB_URL);
-//            if (dbConnection != null) {
-//                DatabaseMetaData meta = dbConnection.getMetaData();
-//                System.out.println("The driver name is " + meta.getDriverName());
-//                System.out.println("A new database has been created.");
-//            }
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
-
     // close connection
     public void closeConnection() {
         // don't forget to close de database
@@ -64,6 +51,7 @@ public class HRDatabase {
         String userTable = UserDAO.getSQLSchema();
         String posteTable = PosteDAO.getSQLSchema();
         String employeeTable = EmployeeDAO.getSQLSchema();
+        String vaccancyTable = VaccancyDAO.getSQLSchema();
         System.out.println("start create tables");
         try(Statement stmt = dbConnection.createStatement()){
             System.out.println("start create table user " + stmt.getMaxFieldSize());
@@ -96,6 +84,18 @@ public class HRDatabase {
             System.out.println("error from db create employee table.");
             System.out.println(e.getMessage());
         }
+
+        try(Statement stmt = dbConnection.createStatement()){
+            boolean isVaccancyTableCreated = stmt.execute(employeeTable);
+            if(isVaccancyTableCreated){
+                System.out.println("vaccancyTable created successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db create vaccancy table.");
+            System.out.println(e.getMessage());
+        }
+
+
 
 
     }
@@ -427,6 +427,122 @@ public class HRDatabase {
             System.out.println(e.getMessage());
         }
         return employeeGet;
+    }
+
+
+    /** VACCANCY OPERATIONS **/
+
+    // insert vaccancy
+    public void insertVaccancy(Vaccancy vaccancy) {
+        // Get the sql statement for the database
+        System.out.println("Start insert vaccancy.");
+        String insert = VaccancyDAO.insertVaccancy(vaccancy);
+        System.out.println("Start insert : " + insert);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isVaccancyInserted = stmt.execute(insert);
+            if(isVaccancyInserted){
+                System.out.println("vaccancy inserted successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db insert vaccancy.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // update vaccancy
+    public void updateVaccancy(Vaccancy vaccancy) {
+        System.out.println("Start update vaccancy.");
+        // Get the sql statement for the database
+        String update = VaccancyDAO.updateVaccancy(vaccancy);
+        System.out.println("Start update : " + update);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isVaccancyUpdated = stmt.execute(update);
+            if(isVaccancyUpdated){
+                System.out.println("vaccancy updated successfully");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error from db update vaccancy.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // delete vaccancy
+    public void deleteVaccancy(int vaccancyId) {
+        System.out.println("Start delete vaccancy.");
+        // Get the sql statement for the database
+        String delete = VaccancyDAO.deleteVaccancy(vaccancyId);
+        System.out.println("Start delete : " + delete);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isVaccancyDeleted = stmt.execute(delete);
+            if(isVaccancyDeleted){
+                System.out.println("vaccancy deleted successfully");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error from db delete vaccancy.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // get vaccancy
+    public Vaccancy getVaccancy(int vaccancyId) {
+        // Get the sql statement for the database
+        System.out.println("Start get vaccancy.");
+        String get = VaccancyDAO.getVaccancy(vaccancyId);
+        System.out.println("Start get : " + get);
+        Vaccancy vaccancyGet = new Vaccancy();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                vaccancyGet = new Vaccancy(
+                        result.getInt("id"),
+                        result.getInt("employee_id"),
+                        result.getLong("starting_date"),
+                        result.getLong("end_date")
+                );
+
+            }
+            System.out.println("return vaccancy: " +  vaccancyGet.toString());
+        } catch (SQLException e) {
+            System.out.println("error from db get vaccancy.");
+            System.out.println(e.getMessage());
+        }
+        return vaccancyGet;
+    }
+
+    // get all vaccancy
+    public List<Vaccancy> getAllVaccancy() {
+        // Get the sql statement for the database
+        System.out.println("Start get all vaccancy.");
+        String get = VaccancyDAO.getAllVaccancy();
+        System.out.println("Start get all : " + get);
+        List<Vaccancy> vaccancyGet = new ArrayList<>();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                Vaccancy vaccancyG = new Vaccancy(
+                        result.getInt("id"),
+                        result.getInt("employee_id"),
+                        result.getLong("starting_date"),
+                        result.getLong("end_date")
+                );
+                vaccancyGet.add(vaccancyG);
+                System.out.println("return all vaccancy.");
+            }
+            for(Vaccancy vacc : vaccancyGet){
+                System.out.println("return Vaccancy in list: " +  vacc.toString());
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db get all Vaccancy.");
+            System.out.println(e.getMessage());
+        }
+        return vaccancyGet;
     }
 
 

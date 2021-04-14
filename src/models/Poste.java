@@ -1,7 +1,5 @@
 package models;
 
-import java.time.Period;
-
 public class Poste {
     private int id;
     private int upPosteId;
