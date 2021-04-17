@@ -3,11 +3,12 @@ package repositories.database;
 import models.Vaccancy;
 
 public class VaccancyDAO {
+    public static final String VACANCY_TABLE = "vaccancy";
 
     public static String getSQLSchema(){
         /** Return the schema for the database **/
-        return "CREATE TABLE IF NOT EXISTS vaccancy (\n"
-                + " id integer PRIMARY KEY,\n"
+        return "CREATE TABLE IF NOT EXISTS "+VACANCY_TABLE+" (\n"
+                + " id integer PRIMARY KEY AUTOINCREMENT,\n"
                 + " employee_id integer,\n"
                 + " starting_date integer,\n"
                 + " end_date integer,\n"
@@ -17,8 +18,7 @@ public class VaccancyDAO {
 
     public static String insertVaccancy(Vaccancy vaccancy){
         /** Return the insert schema for the database **/
-        String sql = "INSERT INTO vaccancy(id, employee_id, starting_date, end_date) VALUES ("
-                + vaccancy.getId() + ","
+        String sql = "INSERT INTO "+VACANCY_TABLE+"(employee_id, starting_date, end_date) VALUES ("
                 + vaccancy.getEmployee_id() + ","
                 + vaccancy.getStarting_date() + "',"
                 + vaccancy.getEnd_date()
@@ -28,8 +28,7 @@ public class VaccancyDAO {
 
     public static String updateVaccancy(Vaccancy vaccancy){
         /** Return the insert schema for the database **/
-        String sql = "UPDATE Vaccancy SET\n"
-                + "id = " + vaccancy.getId() + ","
+        String sql = "UPDATE "+VACANCY_TABLE+" SET\n"
                 + "employee_id = " + vaccancy.getEmployee_id() + ","
                 + "starting_date = " + vaccancy.getStarting_date() + ","
                 + "end_date = " + vaccancy.getEnd_date() + ",\n"
@@ -40,18 +39,18 @@ public class VaccancyDAO {
 
     public static String deleteVaccancy(int vaccancyId){
         /** Return the insert schema for the database **/
-        String sql = "DELETE FROM Vaccancy \n"
+        String sql = "DELETE FROM "+VACANCY_TABLE+" \n"
                 + "WHERE id =" + vaccancyId
                 + ";";
         return  sql;
     }
 
     public static String getVaccancy(int vaccancyId){
-        return  "SELECT * FROM vaccancy WHERE id = "+ vaccancyId;
+        return  "SELECT * FROM "+VACANCY_TABLE+" WHERE id = "+ vaccancyId;
     }
 
     public static String getAllVaccancy(){
-        return  "SELECT * FROM vaccancy";
+        return  "SELECT * FROM " + VACANCY_TABLE;
     }
 
 

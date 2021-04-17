@@ -1,10 +1,14 @@
 package ui;
 
+import repositories.manager.MainManager;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+
 
 public class Home {
     private JButton manageUsersButton;
@@ -13,14 +17,23 @@ public class Home {
     public JPanel homeView;
     private JPanel mainView;
     private JButton manageVacancyButton;
+    public MainManager mainManager;
+    public interface homeInterface{
+        public void openHome();
+    }
 
-    EmployeeScreen employeeScreen = new EmployeeScreen();
-    UserSreen userSreen = new UserSreen();
-    PosteScreen posteScreen = new PosteScreen();
-    VacancyScreen vacancyScreen = new VacancyScreen();
+    EmployeeScreen employeeScreen;
+    UserSreen userSreen;
+    PosteScreen posteScreen;
+    VacancyScreen vacancyScreen;
 
 
-    public Home() {
+    public Home(MainManager mainManager) {
+        this.mainManager = mainManager;
+        employeeScreen = new EmployeeScreen(mainManager);
+        userSreen = new UserSreen(mainManager);
+        posteScreen = new PosteScreen(mainManager);
+        vacancyScreen = new VacancyScreen(mainManager);
         mainView.add("employee",employeeScreen.employeeView);
         mainView.add("user",userSreen.userView);
         mainView.add("poste",posteScreen.posteView);

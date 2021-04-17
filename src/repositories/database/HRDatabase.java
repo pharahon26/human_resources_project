@@ -183,6 +183,64 @@ public class HRDatabase {
         return userGet;
     }
 
+    // connect User
+    public User connectUser(String username, String password) {
+        // Get the sql statement for the database
+        System.out.println("Start connect user.");
+        String get = UserDAO.connectUser(username, password);
+        System.out.println("Start connect : " + get);
+        User userGet = new User();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                userGet = new User(
+                        result.getInt("id"),
+                        result.getString("username"),
+                        result.getString("password")
+                );
+
+            }
+            System.out.println("return user: " +  userGet.toString());
+        } catch (SQLException e) {
+            System.out.println("error from db connect user.");
+            System.out.println(e.getMessage());
+        }
+        return userGet;
+    }
+
+    // get all user
+    public List<User> getAllUser() {
+        // Get the sql statement for the database
+        System.out.println("Start get all User.");
+        String get = UserDAO.getAllUser();
+        System.out.println("Start get all : " + get);
+        List<User> usersGet = new ArrayList<>();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                User userG = new User(
+                        result.getInt("id"),
+                        result.getString("username"),
+                        result.getString("password")
+                );
+                usersGet.add(userG);
+            }
+            System.out.println("return all users.");
+            for(User us : usersGet){
+                System.out.println("return user in list: " +  us.toString());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error from db get all user.");
+            System.out.println(e.getMessage());
+        }
+        return usersGet;
+    }
+
+
+
 
     /** POSTE OPERATIONS **/
 
@@ -271,7 +329,7 @@ public class HRDatabase {
         return posteGet;
     }
 
-    // get Poste
+    // get all Poste
     public List<Poste> getAllPoste() {
         // Get the sql statement for the database
         System.out.println("Start get all poste.");

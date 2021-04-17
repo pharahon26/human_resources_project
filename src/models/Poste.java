@@ -20,6 +20,16 @@ public class Poste {
         this.workTimeHoursByDay = workTimeHoursByDay;
     }
 
+    public Poste(int upPosteId, int downPosteId, double salary, String title, int workTimeHoursByDay) {
+        this.upPosteId = upPosteId;
+        this.downPosteId = downPosteId;
+        this.salary = salary;
+        this.title = title;
+        this.workTimeHoursByDay = workTimeHoursByDay;
+    }
+
+
+
     public int getId() {
         return id;
     }
@@ -70,13 +80,6 @@ public class Poste {
 
     @Override
     public String toString() {
-        return "Poste{" +
-                "id=" + id +
-                ", upPosteId=" + upPosteId +
-                ", downPosteId=" + downPosteId +
-                ", salary=" + salary +
-                ", title='" + title + '\'' +
-                ", workTimeHoursByDay=" + workTimeHoursByDay +
-                '}';
+        return  title;
     }
 }

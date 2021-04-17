@@ -3,6 +3,7 @@ package repositories.manager;
 import models.Employee;
 import models.Poste;
 import models.User;
+import models.Vaccancy;
 import repositories.database.HRDatabase;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class MainManager {
     HRDatabase database = null;
+    User currentUser = null;
 
     public MainManager() {
         database = new HRDatabase();
@@ -40,6 +42,17 @@ public class MainManager {
     public User getUser(int userId) {
         return database.getUser(userId);
     }
+    // get User
+    public User connectUser(String username, String password) {
+        currentUser = database.connectUser(username, password);
+        return currentUser;
+    }
+
+    // get all USER
+    public List<User> getAllUser() {
+        return database.getAllUser();
+    }
+
 
 
     /** POSTE OPERATIONS **/
@@ -96,6 +109,34 @@ public class MainManager {
     // get all Employee
     public List<Employee> getAllEmployee() {
        return database.getAllEmployees();
+    }
+
+
+    /** VACANCY OPERATIONS **/
+
+    // insert vacancy
+    public void insertVacancy(Vaccancy Vacancy) {
+        database.insertVaccancy(Vacancy);
+    }
+
+    // update Vacancy
+    public void updateVacancy(Vaccancy Vacancy) {
+        database.updateVaccancy(Vacancy);
+    }
+
+    // delete Vacancy
+    public void deleteVacancy(int vacancyId) {
+       database.deleteVaccancy(vacancyId);
+    }
+
+    // get Vacancy
+    public Vaccancy getVacancye(int vacancyId) {
+       return database.getVaccancy(vacancyId);
+    }
+
+    // get all Vacancies
+    public List<Vaccancy> getAllVacancy() {
+       return database.getAllVaccancy();
     }
 
 

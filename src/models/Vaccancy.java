@@ -23,6 +23,14 @@ public class Vaccancy {
 
     }
 
+    public Vaccancy(int employee_id, long starting_date, long end_date) {
+        this.employee_id = employee_id;
+        this.starting_date = starting_date;
+        this.end_date = end_date;
+
+    }
+
+
     public int getId() {
         return id;
     }

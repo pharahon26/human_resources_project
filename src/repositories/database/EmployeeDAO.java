@@ -4,10 +4,13 @@ import models.Employee;
 
 public class EmployeeDAO {
 
+    public static final String EMPLOYEE_TABLE = "employees";
+
+
     public static String getSQLSchema(){
         /** Return the schema for the database **/
-        return "CREATE TABLE IF NOT EXISTS employees (\n"
-                + " id integer PRIMARY KEY,\n"
+        return "CREATE TABLE IF NOT EXISTS "+EMPLOYEE_TABLE+" (\n"
+                + " id integer PRIMARY KEY AUTOINCREMENT,\n"
                 + " lastName text NOT NULL,\n"
                 + " firstName text NOT NULL,\n"
                 + " title text NOT NULL,\n"
@@ -21,8 +24,7 @@ public class EmployeeDAO {
 
     public static String insertEmployee(Employee employee){
         /** Return the insert schema for the database **/
-        String sql = "INSERT INTO employees(id, lastName, firstName, title, phoneNumber, birthDay, poste_id, vacancy_days_remaining) VALUES ("
-                + employee.getId() + ",'"
+        String sql = "INSERT INTO "+EMPLOYEE_TABLE+"(lastName, firstName, title, phoneNumber, birthDay, poste_id, vacancy_days_remaining) VALUES ("
                 + employee.getLastName() + "','"
                 + employee.getFirstName() + "','"
                 + employee.getTitle() + "','"
@@ -36,8 +38,7 @@ public class EmployeeDAO {
 
     public static String updateEmployee(Employee employee){
         /** Return the insert schema for the database **/
-        String sql = "UPDATE employees SET\n"
-                + "id = " + employee.getId() + ","
+        String sql = "UPDATE "+EMPLOYEE_TABLE+" SET\n"
                 + "lastName = " + employee.getLastName() + ","
                 + "firstName = " + employee.getFirstName() + ","
                 + "title = " + employee.getTitle() + ","
@@ -52,18 +53,18 @@ public class EmployeeDAO {
 
     public static String deleteEmployee(int employeeId){
         /** Return the insert schema for the database **/
-        String sql = "DELETE FROM employees \n"
+        String sql = "DELETE FROM "+EMPLOYEE_TABLE+" \n"
                 + "WHERE id =" + employeeId
                 + ";";
         return  sql;
     }
 
     public static String getEmployee(int employeeId){
-        return  "SELECT * FROM employees WHERE id = "+ employeeId;
+        return  "SELECT * FROM "+EMPLOYEE_TABLE+" WHERE id = "+ employeeId;
     }
 
     public static String getAllEmployees(){
-        return  "SELECT * FROM employees";
+        return  "SELECT * FROM " + EMPLOYEE_TABLE;
     }
 
 }

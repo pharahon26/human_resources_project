@@ -9,10 +9,13 @@ import javax.swing.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Main {
 
+public class Main implements Home.homeInterface{
 
-    public static void main (String[] args){
+    static JFrame frame = new JFrame("Humain ressources");
+    static Home home;
+
+    public static void main(String[] args){
         MainManager mainManager = new MainManager();
 //        GregorianCalendar date = new GregorianCalendar(1985, Calendar.AUGUST, 18);
 //        String number = "0151838383";
@@ -52,9 +55,9 @@ public class Main {
 //        mainManager.getAllPoste();
 //        mainManager.getAllEmployee();
 
-        JFrame frame = new JFrame("Humain ressources");
-        Connexion connexion = new Connexion();
-        Home home = new Home();
+
+        Connexion connexion = new Connexion(mainManager);
+        home = new Home(mainManager);
         frame.setContentPane(home.homeView);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -62,6 +65,11 @@ public class Main {
         frame.setVisible(true);
 
 
-        mainManager.closeDB();
+
+        }
+
+    @Override
+    public void openHome() {
+        frame.setContentPane(home.homeView);
     }
 }

@@ -3,11 +3,12 @@ package repositories.database;
 import models.Poste;
 
 public class PosteDAO {
+    public static final String POSTE_TABLE = "postes";
 
     public static String getSQLSchema(){
         /** Return the schema for the database **/
-        return "CREATE TABLE IF NOT EXISTS postes (\n"
-                + " id integer PRIMARY KEY,\n"
+        return "CREATE TABLE IF NOT EXISTS "+POSTE_TABLE+" (\n"
+                + " id integer PRIMARY KEY AUTOINCREMENT,\n"
                 + " title text NOT NULL,\n"
                 + " salary real,\n"
                 + " work_time_hours_by_day integer  NOT NULL,\n"
@@ -20,8 +21,7 @@ public class PosteDAO {
 
     public static String insertPoste(Poste poste){
         /** Return the insert schema for the database **/
-        String sql = "INSERT INTO postes(id, up_poste_id, down_poste_id, title, salary, work_time_hours_by_day) VALUES ("
-                + poste.getId() + ","
+        String sql = "INSERT INTO "+POSTE_TABLE+"(up_poste_id, down_poste_id, title, salary, work_time_hours_by_day) VALUES ("
                 + poste.getUpPosteId() + ","
                 + poste.getDownPosteId() + ",'"
                 + poste.getTitle() + "',"
@@ -33,8 +33,7 @@ public class PosteDAO {
 
     public static String updatePoste(Poste poste){
         /** Return the insert schema for the database **/
-        String sql = "UPDATE postes SET\n"
-                + "id = " + poste.getId() + ","
+        String sql = "UPDATE "+POSTE_TABLE+" SET\n"
                 + "up_poste_id = " + poste.getUpPosteId() + ","
                 + "down_poste_id = " + poste.getDownPosteId() + ","
                 + "title = " + poste.getTitle() + ","
@@ -47,18 +46,18 @@ public class PosteDAO {
 
     public static String deletePoste(int posteId){
         /** Return the insert schema for the database **/
-        String sql = "DELETE FROM postes \n"
+        String sql = "DELETE FROM "+POSTE_TABLE+" \n"
                 + "WHERE id =" + posteId
                 + ";";
         return  sql;
     }
 
     public static String getposte(int posteId){
-        return  "SELECT * FROM postes WHERE id = "+ posteId;
+        return  "SELECT * FROM "+POSTE_TABLE+" WHERE id = "+ posteId;
     }
 
     public static String getAllPostes(){
-        return  "SELECT * FROM postes";
+        return  "SELECT * FROM " + POSTE_TABLE;
     }
 
 

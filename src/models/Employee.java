@@ -34,6 +34,17 @@ public class Employee {
         this.vacancy_days_remaining = vacancy_days_remaining;
     }
 
+    public Employee(String lastName, String firstName, String phoneNumber, long birthDay, int posteId, String title, int vacancy_days_remaining) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.phoneNumber = phoneNumber;
+        this.birthDay = birthDay;
+        this.posteId = posteId;
+        this.title = title;
+        this.vacancy_days_remaining = vacancy_days_remaining;
+    }
+
+
     public int getId() {
         return id;
     }
@@ -104,15 +115,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", birthDay=" + birthDay +
-                ", posteId=" + posteId +
-                ", title='" + title + '\'' +
-                ", vacancy_days_remaining=" + vacancy_days_remaining +
-                '}';
+        return lastName +  " | "  + firstName +  " | " + title;
     }
 }
