@@ -24,7 +24,7 @@ public class EmployeeDAO {
 
     public static String insertEmployee(Employee employee){
         /** Return the insert schema for the database **/
-        String sql = "INSERT INTO "+EMPLOYEE_TABLE+"(lastName, firstName, title, phoneNumber, birthDay, poste_id, vacancy_days_remaining) VALUES ("
+        String sql = "INSERT INTO "+EMPLOYEE_TABLE+"(lastName, firstName, title, phoneNumber, birthDay, poste_id, vacancy_days_remaining) VALUES ('"
                 + employee.getLastName() + "','"
                 + employee.getFirstName() + "','"
                 + employee.getTitle() + "','"
@@ -39,10 +39,10 @@ public class EmployeeDAO {
     public static String updateEmployee(Employee employee){
         /** Return the insert schema for the database **/
         String sql = "UPDATE "+EMPLOYEE_TABLE+" SET\n"
-                + "lastName = " + employee.getLastName() + ","
-                + "firstName = " + employee.getFirstName() + ","
-                + "title = " + employee.getTitle() + ","
-                + "phoneNumber = " + employee.getPhoneNumber() + ","
+                + "lastName = '" + employee.getLastName() + "',"
+                + "firstName = '" + employee.getFirstName() + "',"
+                + "title = '" + employee.getTitle() + "',"
+                + "phoneNumber = '" + employee.getPhoneNumber() + "',"
                 + "birthDay = " + employee.getBirthDay() + ","
                 + "poste_id = " + employee.getPosteId() + ","
                 + "vacancy_days_remaining = " + employee.getVacancy_days_remaining() + "\n"

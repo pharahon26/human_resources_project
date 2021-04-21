@@ -10,10 +10,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
-public class Main implements Home.homeInterface{
+public class Main{
 
-    static JFrame frame = new JFrame("Humain ressources");
-    static Home home;
 
     public static void main(String[] args){
         MainManager mainManager = new MainManager();
@@ -57,19 +55,8 @@ public class Main implements Home.homeInterface{
 
 
         Connexion connexion = new Connexion(mainManager);
-        home = new Home(mainManager);
-        frame.setContentPane(home.homeView);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setSize(900, 600);
-        frame.setVisible(true);
-
 
 
         }
 
-    @Override
-    public void openHome() {
-        frame.setContentPane(home.homeView);
-    }
 }

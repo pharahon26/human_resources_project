@@ -1,9 +1,6 @@
 package repositories.manager;
 
-import models.Employee;
-import models.Poste;
-import models.User;
-import models.Vaccancy;
+import models.*;
 import repositories.database.HRDatabase;
 
 import java.util.List;
@@ -43,8 +40,8 @@ public class MainManager {
         return database.getUser(userId);
     }
     // get User
-    public User connectUser(String username, String password) {
-        currentUser = database.connectUser(username, password);
+    public User connectUser(String username) {
+        currentUser = database.connectUser(username);
         return currentUser;
     }
 
@@ -93,7 +90,7 @@ public class MainManager {
 
     // update Employee
     public void updateEmployee(Employee employee) {
-        database.insertEmployee(employee);
+        database.updateEmployee(employee);
     }
 
     // delete Employee
@@ -115,13 +112,19 @@ public class MainManager {
     /** VACANCY OPERATIONS **/
 
     // insert vacancy
-    public void insertVacancy(Vaccancy Vacancy) {
-        database.insertVaccancy(Vacancy);
+    public void insertVacancy(Vaccancy vacancy, int days) {
+        Employee e = getEmployee(vacancy.getId());
+        e.setVacancy_days_remaining(e.getVacancy_days_remaining() - days);
+        updateEmployee(e);
+        database.insertVaccancy(vacancy);
     }
 
     // update Vacancy
-    public void updateVacancy(Vaccancy Vacancy) {
-        database.updateVaccancy(Vacancy);
+    public void updateVacancy(Vaccancy vaccancy, int days) {
+        Employee e = getEmployee(vaccancy.getId());
+        e.setVacancy_days_remaining(e.getVacancy_days_remaining() - days);
+        updateEmployee(e);
+        database.updateVaccancy(vaccancy);
     }
 
     // delete Vacancy
@@ -137,6 +140,40 @@ public class MainManager {
     // get all Vacancies
     public List<Vaccancy> getAllVacancy() {
        return database.getAllVaccancy();
+    }
+
+
+    /** MISSION OPERATIONS **/
+
+    // insert mission
+    public void insertMission(Mission mission, int days) {
+        Employee e = getEmployee(mission.getId());
+        e.setVacancy_days_remaining(e.getVacancy_days_remaining() - days);
+        updateEmployee(e);
+        database.insertMission(mission);
+    }
+
+    // update mission
+    public void updateMission(Mission mission, int days) {
+        Employee e = getEmployee(mission.getId());
+        e.setVacancy_days_remaining(e.getVacancy_days_remaining() - days);
+        updateEmployee(e);
+        database.updateMission(mission);
+    }
+
+    // delete mission
+    public void deleteMission(int missionId) {
+       database.deleteMission(missionId);
+    }
+
+    // get mission
+    public Mission getMission(int missionId) {
+       return database.getMission(missionId);
+    }
+
+    // get all mission
+    public List<Mission> getAllMission() {
+       return database.getAllMission();
     }
 
 

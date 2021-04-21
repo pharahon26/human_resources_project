@@ -20,7 +20,7 @@ public class VaccancyDAO {
         /** Return the insert schema for the database **/
         String sql = "INSERT INTO "+VACANCY_TABLE+"(employee_id, starting_date, end_date) VALUES ("
                 + vaccancy.getEmployee_id() + ","
-                + vaccancy.getStarting_date() + "',"
+                + vaccancy.getStarting_date() + ","
                 + vaccancy.getEnd_date()
                 + ");";
         return  sql;

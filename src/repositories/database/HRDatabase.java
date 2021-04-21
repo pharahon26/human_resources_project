@@ -1,9 +1,6 @@
 package repositories.database;
 
-import models.Employee;
-import models.Poste;
-import models.User;
-import models.Vaccancy;
+import models.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -52,6 +49,7 @@ public class HRDatabase {
         String posteTable = PosteDAO.getSQLSchema();
         String employeeTable = EmployeeDAO.getSQLSchema();
         String vaccancyTable = VaccancyDAO.getSQLSchema();
+        String missionTable = MissionDAO.getSQLSchema();
         System.out.println("start create tables");
         try(Statement stmt = dbConnection.createStatement()){
             System.out.println("start create table user " + stmt.getMaxFieldSize());
@@ -86,7 +84,7 @@ public class HRDatabase {
         }
 
         try(Statement stmt = dbConnection.createStatement()){
-            boolean isVaccancyTableCreated = stmt.execute(employeeTable);
+            boolean isVaccancyTableCreated = stmt.execute(vaccancyTable);
             if(isVaccancyTableCreated){
                 System.out.println("vaccancyTable created successfully");
             }
@@ -95,9 +93,15 @@ public class HRDatabase {
             System.out.println(e.getMessage());
         }
 
-
-
-
+        try(Statement stmt = dbConnection.createStatement()){
+            boolean isMissionTableCreated = stmt.execute(missionTable);
+            if(isMissionTableCreated){
+                System.out.println("missionTable created successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db create mission table.");
+            System.out.println(e.getMessage());
+        }
     }
 
     /** USER OPERATIONS **/
@@ -184,10 +188,10 @@ public class HRDatabase {
     }
 
     // connect User
-    public User connectUser(String username, String password) {
+    public User connectUser(String username) {
         // Get the sql statement for the database
         System.out.println("Start connect user.");
-        String get = UserDAO.connectUser(username, password);
+        String get = UserDAO.connectUser(username);
         System.out.println("Start connect : " + get);
         User userGet = new User();
         try{
@@ -601,6 +605,122 @@ public class HRDatabase {
             System.out.println(e.getMessage());
         }
         return vaccancyGet;
+    }
+
+
+    /** MISSION OPERATIONS **/
+
+    // insert mission
+    public void insertMission(Mission mission) {
+        // Get the sql statement for the database
+        System.out.println("Start insert mission.");
+        String insert = MissionDAO.insertMission(mission);
+        System.out.println("Start insert : " + insert);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isMissionInserted = stmt.execute(insert);
+            if(isMissionInserted){
+                System.out.println("mission inserted successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db insert mission.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // update Mission
+    public void updateMission(Mission mission) {
+        System.out.println("Start update mission.");
+        // Get the sql statement for the database
+        String update = MissionDAO.updateMission(mission);
+        System.out.println("Start update : " + update);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isMissionUpdated = stmt.execute(update);
+            if(isMissionUpdated){
+                System.out.println("mission updated successfully");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error from db update mission.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // delete mission
+    public void deleteMission(int missionId) {
+        System.out.println("Start delete mission.");
+        // Get the sql statement for the database
+        String delete = MissionDAO.deleteMission(missionId);
+        System.out.println("Start delete : " + delete);
+        try{
+            Statement stmt = dbConnection.createStatement();
+            boolean isMissionDeleted = stmt.execute(delete);
+            if(isMissionDeleted){
+                System.out.println("mission deleted successfully");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("error from db delete mission.");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // get mission
+    public Mission getMission(int missionId) {
+        // Get the sql statement for the database
+        System.out.println("Start get mission.");
+        String get = MissionDAO.getMission(missionId);
+        System.out.println("Start get : " + get);
+        Mission missionGet = new Mission();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                missionGet = new Mission(
+                        result.getInt("id"),
+                        result.getInt("employee_id"),
+                        result.getLong("starting_date"),
+                        result.getLong("end_date")
+                );
+
+            }
+            System.out.println("return mission: " +  missionGet.toString());
+        } catch (SQLException e) {
+            System.out.println("error from db get mission.");
+            System.out.println(e.getMessage());
+        }
+        return missionGet;
+    }
+
+    // get all mission
+    public List<Mission> getAllMission() {
+        // Get the sql statement for the database
+        System.out.println("Start get all mission.");
+        String get = MissionDAO.getAllMission();
+        System.out.println("Start get all : " + get);
+        List<Mission> missionGet = new ArrayList<>();
+        try{
+            Statement stmt = dbConnection.createStatement();
+            ResultSet result = stmt.executeQuery(get);
+            while (result.next()) {
+                Mission missionG = new Mission(
+                        result.getInt("id"),
+                        result.getInt("employee_id"),
+                        result.getLong("starting_date"),
+                        result.getLong("end_date")
+                );
+                missionGet.add(missionG);
+                System.out.println("return all mission.");
+            }
+            for(Mission miss : missionGet){
+                System.out.println("return Mission in list: " +  miss.toString());
+            }
+        } catch (SQLException e) {
+            System.out.println("error from db get all Mission.");
+            System.out.println(e.getMessage());
+        }
+        return missionGet;
     }
 
 

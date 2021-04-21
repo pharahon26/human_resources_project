@@ -1,6 +1,7 @@
 package models;
 
 import javax.swing.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Employee {
@@ -16,11 +17,11 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String lastName, String firstName, String phoneNumber, Date employeeBirthBay) {
+    public Employee(String lastName, String firstName, String phoneNumber, LocalDate employeeBirthBay) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.phoneNumber = phoneNumber;
-        this.birthDay = employeeBirthBay.getTime();
+        this.birthDay = employeeBirthBay.toEpochDay();
     }
 
     public Employee(int id, String lastName, String firstName, String phoneNumber, long birthDay, int posteId, String title, int vacancy_days_remaining) {
@@ -85,8 +86,8 @@ public class Employee {
         this.birthDay = birthDay;
     }
 
-    public Date getBirthDayDateFormat() {
-        return new Date(this.birthDay);
+    public LocalDate getBirthDayDateFormat() {
+        return LocalDate.ofEpochDay(this.birthDay);
     }
 
     public int getPosteId() {

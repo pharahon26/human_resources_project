@@ -1,6 +1,5 @@
 package ui;
 
-import models.Employee;
 import models.Poste;
 import repositories.manager.MainManager;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class PosteScreen {
     private JList<Poste> posteList;
-    private JTextField titleFieldTextField;
+    private JTextField titleTextField;
     private JButton updateButton;
     private JTextField salaryTextField;
     private JTextField workTimeTextField;
@@ -24,30 +23,20 @@ public class PosteScreen {
     private JLabel infriorFieldLabel;
     public JPanel posteView;
     private JButton addButton;
-    private JLabel positionsLabel;
     private JComboBox<Poste> posteInf;
     private JComboBox<Poste> posteSup;
+    private JLabel errorTxt;
     public MainManager mainManager;
     private int posteSupId = 0;
     private int posteInfId = 0;
     private boolean inList = false;
+    private DefaultListModel<Poste> posteModel = new DefaultListModel<>();
+    private List<Poste> postes;
 
     public PosteScreen(MainManager mainManager) {
         this.mainManager = mainManager;
-        // get the poste list from the main manager
-        List<Poste> postes = mainManager.getAllPoste() ;
 
-        // configure list and combo box
-        DefaultListModel<Poste> posteModel = new DefaultListModel<>();
-        posteModel.addAll(postes);
-        posteList.setModel(posteModel);
-        posteSup.addItem(new Poste());
-        posteInf.addItem(new Poste());
-        for(Poste p : postes){
-            posteSup.addItem(p);
-            posteInf.addItem(p);
-        }
-
+        relaod();
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +78,7 @@ public class PosteScreen {
                     }
                     String s = String.valueOf(temp.getSalary());
                     String w = String.valueOf(temp.getWorkTimeHoursByDay());
-                    titleFieldTextField.setText(temp.getTitle());
+                    titleTextField.setText(temp.getTitle());
                     salaryTextField.setText(s);
                     workTimeTextField.setText(w);
                 }
@@ -135,7 +124,7 @@ public class PosteScreen {
                 super.mouseClicked(e);
                 if (!inList) {
                     posteList.clearSelection();
-                    titleFieldTextField.setText("");
+                    titleTextField.setText("");
                     salaryTextField.setText("");
                     workTimeTextField.setText("");
                     posteInf.setSelectedIndex(0);
@@ -147,26 +136,103 @@ public class PosteScreen {
         });
     }
 
+    private void relaod(){
+        // get the poste list from the main manager
+        postes = mainManager.getAllPoste() ;
+        // configure list and combo box
+
+        posteModel.addAll(postes);
+        posteList.setModel(posteModel);
+        posteSup.addItem(new Poste());
+        posteInf.addItem(new Poste());
+        for(Poste p : postes){
+            posteSup.addItem(p);
+            posteInf.addItem(p);
+        }
+    }
+
+    private void clearLabel(){
+        titleTextField.setText("");
+        salaryTextField.setText("");
+        workTimeTextField.setText("");
+        posteSup.setSelectedIndex(0);
+        posteInf.setSelectedIndex(0);
+        clearErrorLabel();
+    }
+
+    private void clearErrorLabel(){
+        errorTxt.setText("");
+    }
+
+    private boolean verifieText(String title, String salary, String workTime){
+        boolean valid = true;
+        if (title.trim().length() < 1){
+            errorTxt.setText("title can't be null");
+            valid = false;
+        }
+        else if (salary.trim().length() < 1){
+            errorTxt.setText("salary can't be null");
+            valid = false;
+        }
+        else if (workTime.trim().length() < 1){
+            errorTxt.setText("work time can't be null");
+            valid = false;
+        }
+        else if (Double.parseDouble(salary.trim()) < 20000){
+            errorTxt.setText("salary can't be that low");
+            valid = false;
+        }
+        else if (Integer.parseInt(workTime.trim()) < 2){
+            errorTxt.setText("work time can't be that low");
+            valid = false;
+        }
+        else if (posteSup.getSelectedIndex() == 0){
+            errorTxt.setText("Choose a superior position");
+            valid = false;
+        }
+        else if (posteInf.getSelectedIndex() == 0){
+            errorTxt.setText("Choose an inferior position");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+
     // add a poste to the database
     private void addPoste(){
+        String title = titleTextField.getText();
+        String salary = salaryTextField.getText();
+        String workTime = workTimeTextField.getText();
+        if(verifieText(title,salary,workTime)){
+            Poste p = new Poste(posteSupId, posteInfId, Double.parseDouble(salaryTextField.getText()), titleTextField.getText(), Integer.parseInt(workTimeTextField.getText()) );
+            mainManager.insertPoste(p);
+            relaod();
+            clearLabel();
+        }
 
-
-        Poste p = new Poste(posteSupId, posteInfId, Double.parseDouble(salaryTextField.getText()), titleFieldTextField.getText(), Integer.parseInt(workTimeTextField.getText()) );
-        mainManager.insertPoste(p);
     }
 
     // update a poste to the database
     private void updatePoste(){
         Poste temp = posteList.getSelectedValue();
-
-        Poste p = new Poste( temp.getId(),posteSupId, posteInfId, Double.parseDouble(salaryTextField.getText()), titleFieldTextField.getText(), Integer.parseInt(workTimeTextField.getText()) );
-        mainManager.updatePoste(p);
+        String title = titleTextField.getText();
+        String salary = salaryTextField.getText();
+        String workTime = workTimeTextField.getText();
+        if(verifieText(title,salary,workTime)){
+            Poste p = new Poste( temp.getId(),posteSupId, posteInfId, Double.parseDouble(salaryTextField.getText()), titleTextField.getText(), Integer.parseInt(workTimeTextField.getText()) );
+            mainManager.updatePoste(p);
+            relaod();
+            clearLabel();
+        }
     }
 
     // add a poste to the database
     private void detetePoste(){
         Poste temp = posteList.getSelectedValue();
         mainManager.deletePoste(temp.getId());
+        relaod();
+        clearLabel();
     }
 
 }

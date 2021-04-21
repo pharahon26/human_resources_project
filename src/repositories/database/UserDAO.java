@@ -17,7 +17,7 @@ public class UserDAO {
 
     public static String insertUser(User user){
         /** Return the insert schema for the database **/
-        return "INSERT INTO "+ USER_TABLE +"(username, password) VALUES ("
+        return "INSERT INTO "+ USER_TABLE +"(username, password) VALUES ('"
                 + user.getUsername() + "','"
                 + user.getPassword() + "'"
                 + ")";
@@ -45,8 +45,8 @@ public class UserDAO {
         return  "SELECT * FROM "+USER_TABLE+" WHERE id = "+ userId;
     }
 
-    public static String connectUser(String username, String password){
-        return  "SELECT * FROM "+USER_TABLE+" WHERE username = "+ username + ", password = " + password;
+    public static String connectUser(String username){
+        return  "SELECT * FROM "+USER_TABLE+" WHERE username = '"+ username +"'";
     }
 
     public static String getAllUser(){

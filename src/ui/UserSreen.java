@@ -1,6 +1,5 @@
 package ui;
 
-import models.Poste;
 import models.User;
 import repositories.manager.MainManager;
 
@@ -23,20 +22,17 @@ public class UserSreen {
     private JTextField passwordTxt;
     private JLabel passwordLabel;
     private JLabel usernameLabel;
-    private JLabel usersLabel;
+    private JLabel passwordErrTxt;
+    private JLabel usernameErrTxt;
     public MainManager mainManager;
     private boolean inList = false;
+    List<User> users;
+    private final DefaultListModel<User> userModel = new DefaultListModel<>();
 
     public UserSreen(MainManager mainManager) {
         this.mainManager = mainManager;
 
-        // get the user list from the main manager
-        List<User> users = mainManager.getAllUser() ;
-
-        // configure list and combo box
-        DefaultListModel<User> userModel = new DefaultListModel<>();
-        userModel.addAll(users);
-        userListView.setModel(userModel);
+        relaod();
 
         // button listener update
         updateButton.addActionListener(new ActionListener() {
@@ -105,24 +101,81 @@ public class UserSreen {
         });
     }
 
+    private void relaod(){
+        // get the user list from the main manager
+        users = mainManager.getAllUser();
+
+        // configure list and combo box
+        userModel.removeAllElements();
+        userModel.addAll(users);
+        userListView.setModel(userModel);
+    }
+
+    private void clearLabel(){
+        usernameTxt.setText("");
+        passwordTxt.setText("");
+        clearErrorLabel();
+    }
+
+    private void clearErrorLabel(){
+        usernameErrTxt.setText("");
+        passwordErrTxt.setText("");
+    }
+
+    private boolean verifieText(String username, String password ){
+        boolean valid = true;
+        if (username.trim().length() < 4){
+            usernameErrTxt.setText("Username should have at least 4 characters");
+            valid = false;
+        }
+        else if (password.trim().length() < 4){
+            passwordErrTxt.setText("Password should have at least 4 characters");
+            valid = false;
+        }
+         else {
+            for (User user : users){
+                if (user.getUsername().equals(username.trim())){
+                    usernameErrTxt.setText("Username already taken");
+                    valid = false;
+                }
+            }
+        }
+        return valid;
+    }
+
+
     // add a user to the database
     private void addUser(){
-
-        User u = new User(usernameTxt.getText(), passwordTxt.getText());
-        mainManager.insertUser(u);
+        clearErrorLabel();
+        String username = usernameTxt.getText();
+        String password = passwordTxt.getText();
+        if(verifieText(username, password)){
+            User u = new User(username, password);
+            mainManager.insertUser(u);
+            relaod();
+            clearLabel();
+        }
     }
 
     // update a user to the database
     private void updateUser(){
+        clearErrorLabel();
         User temp = userListView.getSelectedValue();
-
-        User u = new User(usernameTxt.getText(), passwordTxt.getText());
-        mainManager.updateUser(u);
+        String username = usernameTxt.getText();
+        String password = passwordTxt.getText();
+        if(verifieText(username, password)){
+            User u = new User(temp.getId(), usernameTxt.getText(), passwordTxt.getText());
+            mainManager.updateUser(u);
+            relaod();
+            clearLabel();
+        }
     }
 
     // add a user to the database
     private void deteteUser(){
         User temp = userListView.getSelectedValue();
         mainManager.deleteUser(temp.getId());
+        relaod();
+        clearLabel();
     }
 }

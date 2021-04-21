@@ -2,6 +2,7 @@ package ui;
 
 import models.Employee;
 import models.Poste;
+import models.User;
 import repositories.manager.MainManager;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class EmployeeScreen {
@@ -21,7 +23,6 @@ public class EmployeeScreen {
     private JTextField firstnameTxt;
     private JTextField phoneTxt;
     private JTextField professionTxt;
-    private JLabel employeeLabel;
     private JButton addButton;
     private JLabel lastnameLabel;
     private JLabel firstnameLabel;
@@ -36,26 +37,25 @@ public class EmployeeScreen {
     private JLabel dayLabel;
     private JLabel yearLabel;
     private JLabel monthLabel;
+    private JLabel errorTxt;
     public MainManager mainManager;
-    public   List<Employee> employees;
-    public   List<Poste> postes;
+    public List<Employee> employees;
+    public List<Poste> postes;
     private int posteId = 0;
     private int year = 0;
     private int month = 0;
     private int day = 0;
     private boolean inList = false;
+    private DefaultListModel<Employee> employeeModel = new DefaultListModel<>();
+
 
     public EmployeeScreen(MainManager mainManager) {
 
         this.mainManager = mainManager;
         employees = new ArrayList<>();
         postes = new ArrayList<>();
-        employees = mainManager.getAllEmployee();
-        postes = mainManager.getAllPoste();
-        DefaultListModel<Employee> employeeModel = new DefaultListModel<>();
 
-        employeeModel.addAll(employees);
-        employeeListView.setModel(employeeModel);
+        relaod();
 
         String[] monthStrings = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}; //get month names
         SpinnerListModel monthModel = new SpinnerListModel(monthStrings);
@@ -72,18 +72,12 @@ public class EmployeeScreen {
         daySpinner.setModel(dayModel);
         yearSpinner.setModel(yearModel);
 
-
-        positionComboBox.addItem(new Poste());
-        for(Poste p : postes){
-            positionComboBox.addItem(p);
-        }
-
         employeeListView.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(employeeListView.getSelectedValue() != null){
                     Employee temp = employeeListView.getSelectedValue();
-                    Date d = temp.getBirthDayDateFormat();
+                    LocalDate d = temp.getBirthDayDateFormat();
                     String[] monthStrings = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}; //get month names
                     for (Poste t: postes){
                         if(t.getId() == temp.getPosteId()){
@@ -94,8 +88,8 @@ public class EmployeeScreen {
                     firstnameTxt.setText(temp.getFirstName());
                     phoneTxt.setText(temp.getPhoneNumber());
                     professionTxt.setText(temp.getTitle());
-                    daySpinner.setValue(d.getDay());
-                    monthSpinner.setValue(monthStrings[d.getMonth()]);
+                    daySpinner.setValue(d.getDayOfMonth());
+                    monthSpinner.setValue(monthStrings[d.getMonthValue()-1]);
                     yearSpinner.setValue(d.getYear());
                 }
             }
@@ -122,7 +116,10 @@ public class EmployeeScreen {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 Poste temp = (Poste) positionComboBox.getSelectedItem();
-                posteId = temp.getId();
+                if(temp != null){
+                    posteId = temp.getId();
+                }
+
             }
         });
 
@@ -194,26 +191,96 @@ public class EmployeeScreen {
 
     }
 
+    private void relaod(){
+        employees = mainManager.getAllEmployee();
+        postes = mainManager.getAllPoste();
+        employeeModel.removeAllElements();
+        employeeModel.addAll(employees);
+        employeeListView.setModel(employeeModel);
+        positionComboBox.removeAllItems();
+        positionComboBox.addItem(new Poste());
+        for(Poste p : postes){
+            positionComboBox.addItem(p);
+        }
+    }
+
+    private void clearLabel(){
+        lastnameTxt.setText("");
+        firstnameTxt.setText("");
+        phoneTxt.setText("");
+        professionTxt.setText("");
+        positionComboBox.setSelectedIndex(0);
+        clearErrorLabel();
+    }
+
+    private void clearErrorLabel(){
+        errorTxt.setText("");
+    }
+
+    private boolean verifieText(String lastname, String firstname, String phone, String profession){
+        boolean valid = true;
+        if (lastname.trim().length() < 1){
+            errorTxt.setText("lastname can't be null");
+            valid = false;
+        }
+        else if (firstname.trim().length() < 1){
+            errorTxt.setText("firstname can't be null");
+            valid = false;
+        }
+        else if (phone.trim().length() < 10){
+            errorTxt.setText("phone not valid");
+            valid = false;
+        }
+        else if (profession.trim().length() < 1){
+            errorTxt.setText("insert profession");
+            valid = false;
+        }
+        else if (positionComboBox.getSelectedIndex() == 0){
+            errorTxt.setText("Choose a position");
+            valid = false;
+        }
+        return valid;
+    }
 
     // add a employee to the database
     private void addEmployee(){
-        GregorianCalendar d = new GregorianCalendar(year, month, day);
-        Employee e = new Employee(lastnameTxt.getText(), firstnameTxt.getText(), phoneTxt.getText(),d.getTimeInMillis(), posteId, professionTxt.getText(), 30);
-        mainManager.insertEmployee(e);
+        clearErrorLabel();
+        String lastname = lastnameTxt.getText();
+        String firstname = firstnameTxt.getText();
+        String phone = phoneTxt.getText();
+        String profession = professionTxt.getText();
+        if(verifieText(lastname, firstname, phone, profession)){
+            LocalDate d = LocalDate.of(year, month, day);
+            Employee e = new Employee(lastname, firstname, phone,d.toEpochDay(), posteId, profession, 30);
+            mainManager.insertEmployee(e);
+            relaod();
+            clearLabel();
+        }
     }
 
     // update a employee to the database
     private void updateEmployee(){
         Employee temp = employeeListView.getSelectedValue();
-        GregorianCalendar d = new GregorianCalendar(year, month, day);
-        Employee e = new Employee(temp.getId(), lastnameTxt.getText(), firstnameTxt.getText(), phoneTxt.getText(),d.getTimeInMillis(), posteId, professionTxt.getText(), 30);
-        mainManager.updateEmployee(e);
+        clearErrorLabel();
+        String lastname = lastnameTxt.getText();
+        String firstname = firstnameTxt.getText();
+        String phone = phoneTxt.getText();
+        String profession = professionTxt.getText();
+        if(verifieText(lastname, firstname, phone, profession)){
+            LocalDate d = LocalDate.of(year, month, day);
+            Employee e = new Employee(lastname, firstname, phone, d.toEpochDay(), posteId, profession, temp.getVacancy_days_remaining());
+            mainManager.updateEmployee(e);
+            relaod();
+            clearLabel();
+        }
     }
 
     // delete employee to the database
     private void deleteEmployee(){
         Employee temp = employeeListView.getSelectedValue();
         mainManager.deleteEmployee(temp.getId());
+        relaod();
+        clearLabel();
     }
 
 
